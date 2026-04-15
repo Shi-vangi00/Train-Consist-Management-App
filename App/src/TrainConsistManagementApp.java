@@ -18,14 +18,13 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    @Override
-    public String toString() {
-        return name + " (Cap: " + capacity + ")";
+    public int getCapacity() {
+        return capacity;
     }
 
-    // Getter needed for grouping classification
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return name + " (" + capacity + ")";
     }
 }
 
@@ -34,32 +33,29 @@ public class TrainConsistManagementApp {
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        // 1. Initialize the list with multiple bogies of the same type
+        // 1. Initialize the list of bogies
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("First Class", 24));
-        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("General", 90));
 
-        System.out.println("Original List: " + bogies);
+        System.out.println("Current Bogies: " + bogies);
 
-        // 2. Stream API Grouping
-        // Uses Collectors.groupingBy to classify bogies by their name
-        System.out.println("\nGrouping bogies by type...");
+        // 2. Stream API Aggregation
+        // map() transforms Bogie objects into Integers
+        // reduce() sums them up starting from 0 (identity)
+        System.out.println("\nCalculating total seating capacity...");
 
-        Map<String, List<Bogie>> groupedBogies = bogies.stream()
-                .collect(Collectors.groupingBy(Bogie::getName));
+        int totalCapacity = bogies.stream()
+                .map(Bogie::getCapacity)        // Transformation
+                .reduce(0, Integer::sum);      // Aggregation
 
-        // 3. Display Result (Restructured Map)
-        System.out.println("Grouped Bogie Structure:");
-        groupedBogies.forEach((type, list) -> {
-            System.out.println(type + " -> " + list);
-        });
+        // 3. Display the result
+        System.out.println("Total Seating Capacity: " + totalCapacity + " seats");
 
         // 4. Verification for Test Cases
         System.out.println("\nVerification:");
-        System.out.println("Total Categories: " + groupedBogies.size());
-        System.out.println("Original list integrity maintained: " + (bogies.size() == 5));
+        System.out.println("Original list integrity maintained: " + (bogies.size() == 4));
     }
 }
