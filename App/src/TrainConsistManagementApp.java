@@ -6,27 +6,55 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Comparator;
+
+class Bogie {
+    String name;
+    int capacity;
+
+    public Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    public String getName() { return name; }
+    public int getCapacity() { return capacity; }
+
+    @Override
+    public String toString() {
+        return name + " -> " + capacity;
+    }
+}
 
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
-        // 1. Welcome Header
-        System.out.println("=== Train Consist Management App ===");
+        System.out.println("========================================");
+        System.out.println(" UC7 - Sort Bogies by Capacity (Comparator) ");
+        System.out.println("========================================\n");
 
-        // 2. Initialize HashMap (Bogie Name -> Capacity)
-        Map<String, Integer> bogieCapacity = new HashMap<>();
+        // 1. Create a list of Bogie objects
+        List<Bogie> bogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
+        bogies.add(new Bogie("General", 90));
 
-        // 3. Mapping Bogie Attributes (put() method)
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 56);
-        bogieCapacity.put("First Class", 24);
-
-        System.out.println("Bogie capacities mapped.");
-
-        // 4. Iterating through the Map using entrySet()
-        System.out.println("\nBogie-Capacity Details:");
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println("Bogie: " + entry.getKey() + " | Capacity: " + entry.getValue());
+        // 2. Display before sorting
+        System.out.println("Before Sorting:");
+        for (Bogie b : bogies) {
+            System.out.println(b);
         }
+
+        // 3. Apply custom sorting using Comparator (Sorts by Capacity ascending)
+        bogies.sort(Comparator.comparingInt(Bogie::getCapacity));
+
+        // 4. Display after sorting (Matches the SS order)
+        System.out.println("\nAfter Sorting by Capacity:");
+        for (Bogie b : bogies) {
+            System.out.println(b);
+        }
+
+        System.out.println("\nUC7 sorting completed...");
     }
 }
