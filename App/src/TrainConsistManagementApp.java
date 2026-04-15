@@ -12,63 +12,67 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class InvalidCapacityException extends Exception {
-    public InvalidCapacityException(String message) {
+class CargoSafetyException extends RuntimeException {
+    public CargoSafetyException(String message) {
         super(message);
     }
 }
 
-/**
- * Bogie class with Fail-Fast constructor validation.
- */
-class Bogie {
-    private String type;
-    private int capacity;
+class GoodsBogie {
+    private String shape;
+    private String cargo;
 
-    public Bogie(String type, int capacity) throws InvalidCapacityException {
-        // Enforce business rule: Capacity must be > 0
-        if (capacity <= 0) {
-            throw new InvalidCapacityException("Capacity must be greater than zero");
+    public GoodsBogie(String shape) {
+        this.shape = shape;
+    }
+
+    /**
+     * Assigns cargo with safety validation.
+     */
+    public void assignCargo(String cargoType) {
+        System.out.println("Validating assignment: " + cargoType + " to " + shape + " bogie...");
+
+        try {
+            // Safety Rule: Petroleum must not be in a Rectangular bogie
+            if (shape.equalsIgnoreCase("Rectangular") && cargoType.equalsIgnoreCase("Petroleum")) {
+                throw new CargoSafetyException("SAFETY ALERT: Petroleum cannot be assigned to a Rectangular bogie!");
+            }
+
+            this.cargo = cargoType;
+            System.out.println("Success: Cargo '" + cargoType + "' assigned safely.");
+
+        } catch (CargoSafetyException e) {
+            System.err.println("Caught Exception: " + e.getMessage());
+        } finally {
+            System.out.println("[System Log]: Cargo validation process completed.");
         }
-        this.type = type;
-        this.capacity = capacity;
     }
 
     @Override
     public String toString() {
-        return type + " (Capacity: " + capacity + ")";
+        return "Bogie [Shape=" + shape + ", Cargo=" + (cargo != null ? cargo : "None") + "]";
     }
 }
 
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
-        System.out.println("=UC14: Handle Invalid Bogie Capacity =");
+        System.out.println(" UC15: Safe Cargo Assignment Using try-catch-finally ");
 
-        // Scenario 1: Creating a Valid Bogie
-        try {
-            System.out.println("\nAttempting to create a valid bogie...");
-            Bogie validBogie = new Bogie("Sleeper", 72);
-            System.out.println("Success: " + validBogie);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+        // 1. Valid Assignment
+        System.out.println("\n--- Test Case 1: Safe Assignment ---");
+        GoodsBogie cylindrical = new GoodsBogie("Cylindrical");
+        cylindrical.assignCargo("Petroleum");
 
-        // Scenario 2: Creating an Invalid Bogie (Zero Capacity)
-        try {
-            System.out.println("\nAttempting to create an invalid bogie (Capacity: 0)...");
-            Bogie invalidBogie = new Bogie("AC Chair", 0);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Expected Exception: " + e.getMessage());
-        }
+        // 2. Unsafe Assignment
+        System.out.println("\n--- Test Case 2: Unsafe Assignment ---");
+        GoodsBogie rectangular = new GoodsBogie("Rectangular");
+        rectangular.assignCargo("Petroleum");
 
-        // Scenario 3: Creating an Invalid Bogie (Negative Capacity)
-        try {
-            System.out.println("\nAttempting to create an invalid bogie (Capacity: -10)...");
-            Bogie negativeBogie = new Bogie("First Class", -10);
-        } catch (InvalidCapacityException e) {
-            System.out.println("Caught Expected Exception: " + e.getMessage());
-        }
+        // 3. Verification of system stability
+        System.out.println("\n--- Test Case 3: Post-Exception Continuity ---");
+        rectangular.assignCargo("Grain");
 
-        System.out.println("\nUC14 validation completed...");
+        System.out.println("\nFinal State: " + rectangular);
+        System.out.println("App status: Running safely.");
     }
 }
