@@ -11,68 +11,35 @@ import java.util.stream.Collectors;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
-
-class GoodsBogie {
-    private String shape;
-    private String cargo;
-
-    public GoodsBogie(String shape) {
-        this.shape = shape;
-    }
-
-    /**
-     * Assigns cargo with safety validation.
-     */
-    public void assignCargo(String cargoType) {
-        System.out.println("Validating assignment: " + cargoType + " to " + shape + " bogie...");
-
-        try {
-            // Safety Rule: Petroleum must not be in a Rectangular bogie
-            if (shape.equalsIgnoreCase("Rectangular") && cargoType.equalsIgnoreCase("Petroleum")) {
-                throw new CargoSafetyException("SAFETY ALERT: Petroleum cannot be assigned to a Rectangular bogie!");
-            }
-
-            this.cargo = cargoType;
-            System.out.println("Success: Cargo '" + cargoType + "' assigned safely.");
-
-        } catch (CargoSafetyException e) {
-            System.err.println("Caught Exception: " + e.getMessage());
-        } finally {
-            System.out.println("[System Log]: Cargo validation process completed.");
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Bogie [Shape=" + shape + ", Cargo=" + (cargo != null ? cargo : "None") + "]";
-    }
-}
+import java.util.Arrays;
 
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
-        System.out.println(" UC15: Safe Cargo Assignment Using try-catch-finally ");
+        System.out.println(" UC16: Sort Passenger Bogies by Capacity ");
 
-        // 1. Valid Assignment
-        System.out.println("\n--- Test Case 1: Safe Assignment ---");
-        GoodsBogie cylindrical = new GoodsBogie("Cylindrical");
-        cylindrical.assignCargo("Petroleum");
+        // 1. Initial array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        // 2. Unsafe Assignment
-        System.out.println("\n--- Test Case 2: Unsafe Assignment ---");
-        GoodsBogie rectangular = new GoodsBogie("Rectangular");
-        rectangular.assignCargo("Petroleum");
+        System.out.println("Before Sorting: " + Arrays.toString(capacities));
 
-        // 3. Verification of system stability
-        System.out.println("\n--- Test Case 3: Post-Exception Continuity ---");
-        rectangular.assignCargo("Grain");
+        // 2. Bubble Sort Algorithm
+        // The outer loop tracks the number of passes
+        for (int i = 0; i < capacities.length - 1; i++) {
+            // The inner loop compares adjacent elements
+            for (int j = 0; j < capacities.length - 1 - i; j++) {
+                // If the left element is greater than the right, swap them
+                if (capacities[j] > capacities[j + 1]) {
+                    // Swapping Logic
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
+            }
+        }
 
-        System.out.println("\nFinal State: " + rectangular);
-        System.out.println("App status: Running safely.");
+        // 3. Display the sorted result
+        System.out.println("After Sorting (Bubble Sort): " + Arrays.toString(capacities));
+
+        System.out.println("\nUC16 manual sorting completed...");
     }
 }
