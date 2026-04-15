@@ -12,60 +12,54 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class GoodsBogie {
-    String type;
-    String cargo;
+class Bogie {
+    String name;
+    int capacity;
 
-    public GoodsBogie(String type, String cargo) {
-        this.type = type;
-        this.cargo = cargo;
+    public Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
     }
 
-    @Override
-    public String toString() {
-        return type + " [" + cargo + "]";
-    }
+    public int getCapacity() { return capacity; }
 }
 
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        System.out.println("=== Train Performance Benchmarking ===");
+        // 1. Prepare a larger dataset for more accurate measurement
+        List<Bogie> bogies = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            bogies.add(new Bogie("Sleeper", 72));
+            bogies.add(new Bogie("AC Chair", 56));
+        }
 
-        System.out.println("==========================================");
-        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies ");
-        System.out.println("==========================================\n");
-
-        // 1. Prepare list of goods bogies
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
-        goodsBogies.add(new GoodsBogie("Open", "Coal"));
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Petroleum"));
-        goodsBogies.add(new GoodsBogie("Box", "Grain"));
-
-        System.out.println("Goods Bogies: " + goodsBogies);
-
-        // 2. Stream Safety Validation
-        // Rule: If type is "Cylindrical", cargo must be "Petroleum"
-        System.out.println("\nVerifying safety compliance...");
-
-        boolean isSafe = goodsBogies.stream().allMatch(b -> {
-            if (b.type.equals("Cylindrical")) {
-                return b.cargo.equals("Petroleum");
+        // 2. Benchmarking Loop-Based Filtering
+        long startTimeLoop = System.nanoTime();
+        List<Bogie> filteredLoop = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.getCapacity() > 60) {
+                filteredLoop.add(b);
             }
-            return true; // Non-cylindrical bogies are always safe for now
-        });
+        }
+        long endTimeLoop = System.nanoTime();
+        long durationLoop = endTimeLoop - startTimeLoop;
 
-        // 3. Display Result
-        System.out.println("Train Safety Compliant: " + isSafe);
+        // 3. Benchmarking Stream-Based Filtering
+        long startTimeStream = System.nanoTime();
+        List<Bogie> filteredStream = bogies.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .collect(Collectors.toList());
+        long endTimeStream = System.nanoTime();
+        long durationStream = endTimeStream - startTimeStream;
 
-        // 4. Testing a violation
-        System.out.println("\nScenario: Adding unsafe bogie (Cylindrical carrying Coal)...");
-        goodsBogies.add(new GoodsBogie("Cylindrical", "Coal"));
+        // 4. Display Results
+        System.out.println("Loop-Based Time: " + durationLoop + " ns");
+        System.out.println("Stream-Based Time: " + durationStream + " ns");
 
-        boolean isStillSafe = goodsBogies.stream().allMatch(b ->
-                !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum")
-        );
-
-        System.out.println("Updated Train Safety Compliant: " + isStillSafe);
+        // 5. Verification
+        System.out.println("\nVerification:");
+        System.out.println("Results Match: " + (filteredLoop.size() == filteredStream.size()));
+        System.out.println("Bogie count filtered: " + filteredLoop.size());
     }
-
 }
