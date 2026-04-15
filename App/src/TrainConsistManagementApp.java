@@ -14,48 +14,52 @@ import java.util.regex.Pattern;
 import java.util.Arrays;
 
 public class TrainConsistManagementApp {
-    public static void main(String[] args) {
-        System.out.println(" UC19: Binary Search for Bogie ID  ");
 
-        // 1. Array of Bogie IDs (Pre-sorted for Binary Search)
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchKey = "BG309";
+    public static void performSearch(List<String> bogieIds, String searchKey) {
+        System.out.println("Initiating search for Bogie: " + searchKey);
+        System.out.println("=== UC20: Exception Handling During Search Operations\n ===");
 
-        // 2. Display Available Bogies
-        System.out.print("Available Bogies IDs: ");
-        for (int i = 0; i < bogieIds.length; i++) {
-            System.out.print(bogieIds[i] + (i < bogieIds.length - 1 ? ", " : ""));
-        }
-        System.out.println("\n");
-
-        // 3. Binary Search Logic
-        int low = 0;
-        int high = bogieIds.length - 1;
-        int foundIndex = -1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            // Lexicographical comparison using compareTo()
-            int comparison = searchKey.compareTo(bogieIds[mid]);
-
-            if (comparison == 0) {
-                foundIndex = mid;
-                break; // Match found
-            } else if (comparison > 0) {
-                low = mid + 1; // Key is in the right half
-            } else {
-                high = mid - 1; // Key is in the left half
-            }
+        // 1. State Validation (Fail-Fast)
+        if (bogieIds == null || bogieIds.isEmpty()) {
+            throw new IllegalStateException("Search Failed: No bogies available in the train consist.");
         }
 
-        // 4. Display Search Result
-        if (foundIndex != -1) {
-            System.out.println("Bogie " + searchKey + " found in train consist using binary search at position " + (foundIndex + 1));
+        // 2. Search Logic (Only executes if state is valid)
+        boolean found = bogieIds.contains(searchKey);
+
+        if (found) {
+            System.out.println("Success: Bogie " + searchKey + " located in consist.");
         } else {
-            System.out.println("Bogie " + searchKey + " not found in train consist.");
+            System.out.println("Result: Bogie " + searchKey + " not found.");
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== Train Consist Management App ===");
+
+        // Scenario 1: Searching an empty list
+        List<String> emptyConsist = new ArrayList<>();
+        try {
+            System.out.println("\n--- Testing Search on Empty Consist ---");
+            performSearch(emptyConsist, "BG101");
+        } catch (IllegalStateException e) {
+            System.err.println("Caught Expected Exception: " + e.getMessage());
         }
 
-        System.out.println("\nUC19 search completed...");
+        // Scenario 2: Searching a populated list
+        List<String> activeConsist = new ArrayList<>();
+        activeConsist.add("BG101");
+        activeConsist.add("BG205");
+        activeConsist.add("BG309");
+
+        try {
+            System.out.println("\n--- Testing Search on Populated Consist ---");
+            System.out.println("Available Bogies: " + activeConsist);
+            performSearch(activeConsist, "BG205");
+        } catch (IllegalStateException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        System.out.println("\nUC20 state validation completed...");
     }
 }
