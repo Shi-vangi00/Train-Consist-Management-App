@@ -2,29 +2,37 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
+import java.util.LinkedList;
+
 
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
+        // 1. Welcome Header
         System.out.println("=== Train Consist Management App ===");
 
-        // 1. Initialize a HashSet to store unique Bogie IDs
-        // HashSet uses hashing to ensure that no two identical strings can exist
-        Set<String> bogieIds = new HashSet<>();
+        // 2. Initial Setup
+        LinkedList<String> trainConsist = new LinkedList<>();
+        trainConsist.add("Engine");
+        trainConsist.add("Sleeper");
+        trainConsist.add("AC");
+        trainConsist.add("Cargo");
+        trainConsist.add("Guard");
 
-        // 2. Adding Bogie IDs (including intentional duplicates)
-        System.out.println("Registering bogie IDs...");
-        bogieIds.add("BG101");
-        bogieIds.add("BG102");
-        bogieIds.add("BG103");
+        // Display Initial State
+        System.out.println("Initial Train Formation: " + trainConsist);
 
-        // Intentional duplicate entry
-        System.out.println("Attempting to add duplicate ID: BG101");
-        bogieIds.add("BG101");
+        // 3. Middle Insertion
+        System.out.println("\nInserting Pantry Car at position 2...");
+        trainConsist.add(2, "Pantry Car");
 
-        // 3. Display the final set
-        // Notice that the duplicate "BG101" is automatically ignored
-        System.out.println("Unique Bogie IDs registered: " + bogieIds);
-        System.out.println("Total unique bogies: " + bogieIds.size());
+        // 4. Head and Tail Removal
+        System.out.println("Detaching first and last bogies...");
+        trainConsist.removeFirst();
+        trainConsist.removeLast();
+
+        // 5. Final State Report (Matches the SS spacing)
+        System.out.println("\nFinal Ordered Train Consist: " + trainConsist);
+        System.out.println("Total bogies remaining: " + trainConsist.size());
     }
 }
