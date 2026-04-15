@@ -15,20 +15,38 @@ import java.util.Arrays;
 
 public class TrainConsistManagementApp {
     public static void main(String[] args) {
-        System.out.println(" UC17: Sort Bogie Names Using Arrays.sort()\n ");
+        System.out.println(" UC18: Linear Search for Bogie ID ");
 
-        // 1. Initial array of unsorted bogie type names
-        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+        // 1. Array of Bogie IDs
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchKey = "BG309";
 
-        System.out.println("Before Sorting: " + Arrays.toString(bogieNames));
+        // 2. Display Available Bogies (As requested)
+        System.out.print("Available Bogies IDs: ");
+        for (int i = 0; i < bogieIds.length; i++) {
+            System.out.print(bogieIds[i] + (i < bogieIds.length - 1 ? ", " : ""));
+        }
+        System.out.println("\n");
 
-        // 2. Built-in Sorting (Optimized Library Method)
-        // Uses Natural Ordering (Alphabetical for Strings)
-        Arrays.sort(bogieNames);
+        // 3. Linear Search Logic
+        boolean found = false;
+        int position = -1;
 
-        // 3. Display the sorted result using Arrays.toString()
-        System.out.println("After Sorting (Arrays.sort): " + Arrays.toString(bogieNames));
+        for (int i = 0; i < bogieIds.length; i++) {
+            if (bogieIds[i].equals(searchKey)) {
+                found = true;
+                position = i + 1; // Human-readable position (1-based)
+                break;
+            }
+        }
 
-        System.out.println("\nUC17 library sorting completed...");
+        // 4. Display Search Result
+        if (found) {
+            System.out.println("Bogie " + searchKey + " found in train consist at position " + position);
+        } else {
+            System.out.println("Bogie " + searchKey + " not found in train consist.");
+        }
+
+        System.out.println("\nUC18 search completed...");
     }
 }
