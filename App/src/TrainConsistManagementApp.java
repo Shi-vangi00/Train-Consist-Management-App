@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 class Bogie {
     String name;
@@ -17,44 +18,38 @@ class Bogie {
         this.capacity = capacity;
     }
 
-    public String getName() { return name; }
-    public int getCapacity() { return capacity; }
-
     @Override
     public String toString() {
-        return name + " -> " + capacity;
+        return name + " (Capacity: " + capacity + ")";
     }
 }
 
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
-        System.out.println("========================================");
-        System.out.println(" UC7 - Sort Bogies by Capacity (Comparator) ");
-        System.out.println("========================================\n");
+        System.out.println("=== Train Consist Management App ===");
 
-        // 1. Create a list of Bogie objects
+        // 1. Initialize the list of bogies (Reuse from UC7)
         List<Bogie> bogies = new ArrayList<>();
         bogies.add(new Bogie("Sleeper", 72));
         bogies.add(new Bogie("AC Chair", 56));
         bogies.add(new Bogie("First Class", 24));
         bogies.add(new Bogie("General", 90));
 
-        // 2. Display before sorting
-        System.out.println("Before Sorting:");
-        for (Bogie b : bogies) {
-            System.out.println(b);
-        }
+        System.out.println("All bogies: " + bogies);
 
-        // 3. Apply custom sorting using Comparator (Sorts by Capacity ascending)
-        bogies.sort(Comparator.comparingInt(Bogie::getCapacity));
+        // 2. Stream API Filtering
+        // Goal: Identify high-capacity bogies (Capacity > 60)
+        System.out.println("\nFiltering bogies with capacity > 60...");
 
-        // 4. Display after sorting (Matches the SS order)
-        System.out.println("\nAfter Sorting by Capacity:");
-        for (Bogie b : bogies) {
-            System.out.println(b);
-        }
+        List<Bogie> highCapacityBogies = bogies.stream()
+                .filter(b -> b.capacity > 60) // Condition logic
+                .collect(Collectors.toList()); // Terminal operation
 
-        System.out.println("\nUC7 sorting completed...");
+        // 3. Display Result
+        System.out.println("High-Capacity Bogies: " + highCapacityBogies);
+
+        // Verify original list integrity
+        System.out.println("Original list remains unchanged: " + bogies.size() + " items.");
     }
 }
